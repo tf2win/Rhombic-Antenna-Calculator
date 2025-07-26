@@ -16,10 +16,13 @@ HTML = """
 {% if result %}
   <h3>Niðurstöður:</h3>
   <ul>
-    <li>Bylgjulengd: {{ result.wavelength }} m</li>
-    <li>Lengd hliðar: {{ result.side_length }} m</li>
-    <li>Lárétt breidd (enda í enda): {{ result.width }} m</li>
-    <li>Hæð (frá miðpunkti að toppi/neðst): {{ result.height }} m</li>
+  <li><strong>Hæð (h):</strong> Mælt frá jörðu að fóðrunarleið í miðpunkti</li>
+  <li><strong>Lengd (L):</strong> Hliðarlengd í metrum</li>
+  <li><strong>Horn (θ):</strong> Ytri eða innri hornið eftir stillingu</li>
+  <li><strong>Fóðrunarpunktur:</strong> Þar sem coax tengist balun eða twin‑lead</li>
+  <li><strong>Terminering:</strong> 600 Ω mótstaða við langendan (einátta orientation)</li>
+</ul>
+
   </ul>
 {% endif %}
 """
