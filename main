@@ -1,0 +1,57 @@
+from flask import Flask, render_template_string, request
+import math
+
+app = Flask(__name__)
+
+HTML = """
+<!doctype html>
+<title>Tígulloftnet Reiknivél</title>
+<h2>Tígulloftnet fyrir 6m bandið</h2>
+<form method="post">
+  Tíðni (MHz): <input type="text" name="frequency" value="50.2"><br><br>
+  Lengd hliðar (x λ): <input type="text" name="multiplier" value="2"><br><br>
+  Horn (°): <input type="text" name="angle" value="60"><br><br>
+  <input type="submit" value="Reikna">
+</form>
+{% if result %}
+  <h3>Niðurstöður:</h3>
+  <ul>
+    <li>Bylgjulengd: {{ result.wavelength }} m</li>
+    <li>Lengd hliðar: {{ result.side_length }} m</li>
+    <li>Lárétt breidd (enda í enda): {{ result.width }} m</li>
+    <li>Hæð (frá miðpunkti að toppi/neðst): {{ result.height }} m</li>
+  </ul>
+{% endif %}
+"""
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    result = None
+    if request.method == 'POST':
+        try:
+            frequency = float(request.form['frequency'])
+            multiplier = float(request.form['multiplier'])
+            angle_deg = float(request.form['angle'])
+
+            c = 299_792_458
+            f_hz = frequency * 1_000_000
+            wavelength = c / f_hz
+            side_length = multiplier * wavelength
+
+            theta = math.radians(angle_deg / 2)
+            width = 2 * side_length * math.cos(theta)
+            height = side_length * math.sin(theta)
+
+            result = {
+                'wavelength': round(wavelength, 2),
+                'side_length': round(side_length, 2),
+                'width': round(width, 2),
+                'height': round(height, 2)
+            }
+        except:
+            result = {'error': 'Villa í innslætti!'}
+
+    return render_template_string(HTML, result=result)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
